@@ -399,7 +399,7 @@ class QwiicScale(object):
 
 
     #Call when scale is setup, level, at running temperature, with nothing on it
-    def calculateZeroOffset(self,averageAmount):
+    '''def calculateZeroOffset(self,averageAmount):
         setZeroOffset(getAverage(averageAmount))
 	
 
@@ -412,7 +412,7 @@ class QwiicScale(object):
     def getZeroOffset(self):
 	    return (_zeroOffset)
 
-    '''
+    
 	#Call after zeroing. Provide the float weight sitting on scale. Units do not matter.
 	def calculateCalibrationFactor(float weightOnScale, uint8_t averageAmount):
 	
