@@ -377,12 +377,11 @@ class QwiicScale(object):
         return (value & (sign_bit - 1)) - (value & sign_bit)
 	
 
-	#Return the average of a given number of readings
+    #Return the average of a given number of readings
 	#Gives up after 1000ms so don't call this function to average 8 samples setup at 1Hz output (requires 8s)
     def getAverage(self, averageAmount):
         total = 0
         samplesAquired = 0
-        
         startTime = int(round(time.time()*1000.0))
         while (1):
             if (self.available()):

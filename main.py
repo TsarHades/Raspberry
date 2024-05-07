@@ -48,6 +48,7 @@ if __name__ == '__main__':
         currentreading = qwiic.getReading()
         print(currentreading)
         getav(currentreading)
+        time.sleep(0.5)
 
 
 
