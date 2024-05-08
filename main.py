@@ -12,7 +12,7 @@ import keyboard
 
 
 ##Variables, class and functions set
-'''qwiic = qwiicscale.QwiicScale()'''
+qwiic = qwiicscale.QwiicScale()
 average = []
 resultsoutput =[]
 calzero = "n"
@@ -86,6 +86,9 @@ time2 = int(input("Hoeveel seconden wil je de grafiek zien?"))
 
 while looping:
     timeav =[]
+    '''currentreading = qwiic.getReading()
+    print(currentreading)
+    numbers = getav(currentreading)'''
     numbers = getav(listtest)
     for z in range(0,len(numbers)):
         y.append(numbers[z])
