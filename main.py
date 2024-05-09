@@ -1,5 +1,4 @@
 # Import statements
-import datetime
 import random
 import qwiicscale
 import time
@@ -9,6 +8,7 @@ import cayenne.client
 from matplotlib import pyplot
 from matplotlib.animation import FuncAnimation
 import keyboard
+import blynklib
 
 
 ##Variables, class and functions set
@@ -21,14 +21,11 @@ CalibrateZero=0
 x=[]
 y=[]
 timeav = []
-timebegin = time.time()
 
-'''MQTT_USERNAME = "2444e11b-393c-4cd8-8171-61ad9d5b9c82"
-MQTT_PASSWORD = "00000000FA5841E1"
-MQTT_CLIENT_ID = "15F9EB1C"
-HOSTNAME = "mqtt.zafron.dev"
-client = cayenne.client.CayenneMQTTClient()
-client.begin(MQTT_USERNAME,MQTT_PASSWORD,MQTT_CLIENT_ID,hostname=HOSTNAME)'''
+
+listtest = [5, 8, 7, 3, 3, 6, 10, 4, 9, 9, 4, 2, 1, 3, 4, 6, 5, 1, 9, 10, 5, 3, 10, 1]
+
+
 
 def getav(numbers):
     resultsoutput = []
@@ -53,12 +50,13 @@ def getav(numbers):
 
 
 
-'''if __name__ == '__main__':
+if __name__ == '__main__':
     qwiic.begin()
     connection = qwiic.is_connected()
     print(connection)
     qwiic.available()
-
+    blynk = blynklib.Blynk('WJbSxpdW_KDfcH1BnAtdHlX6vxxeAXRZ')
+    @blynk.
     while calzero != "n":
         input('Qwiic calibration. Press any key when device is not under strain.')
         CalibrateZero = qwiic.getAverage(averageAmount=64)
@@ -78,31 +76,30 @@ def getav(numbers):
         currentreading = qwiic.getReading()
         print(currentreading)
         getav(currentreading)
-        time.sleep(0.5)'''
+        time.sleep(0.5)
 
-listtest = [5, 8, 7, 3, 3, 6, 10, 4, 9, 9, 4, 2, 1, 3, 4, 6, 5, 1, 9, 10, 5, 3, 10, 1]
 looping = True
-time2 = int(input("Hoeveel seconden wil je de grafiek zien?"))
+time2 = int(input("Hoeveel seconden wil je de grafiek zien? "))
+timebegin = time.time()
 
-while looping:
+
+'''while looping:
     timeav =[]
-    '''currentreading = qwiic.getReading()
+    currentreading = qwiic.getReading()
     print(currentreading)
-    numbers = getav(currentreading)'''
+    numbers = getav(currentreading)
     numbers = getav(listtest)
-    for z in range(0,len(numbers)):
+    for z in range(0,4):
         y.append(numbers[z])
-    for p in range(0,len(timeav)):
-        x.append(timeav[p])
-    '''x.append(time.time())
-    y.append(random.random())'''
-    time.sleep(0.03)
+        x.append(timeav[z])
+    x.append(time.time())
+    y.append(random.random())
     if time.time()-timebegin > time2:
         x = x[4:]
         y = y[4:]
     pyplot.clf()
     pyplot.plot(x,y)
     pyplot.draw()
-    pyplot.pause(0.03)
+    pyplot.pause(0.03) # Tijd instellen op basis van metingen per seconde => momenteel 16 per seconde'''
 
 
