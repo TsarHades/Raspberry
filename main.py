@@ -8,19 +8,21 @@ import cayenne.client
 from matplotlib import pyplot
 from matplotlib.animation import FuncAnimation
 import keyboard
-import blynklib
+import BlynkLib
 
 
 ##Variables, class and functions set
 qwiic = qwiicscale.QwiicScale()
 average = []
 resultsoutput =[]
-calzero = "n"
-calweight = "n"
+V1 = 0
+V2 = 0
 CalibrateZero=0
-x=[]
-y=[]
-timeav = []
+weight = False
+BLYNK_TEMPLATE_ID = "TMPL5E9rUAxOQ"
+BLYNK_TEMPLATE_NAME = "Quickstart Template"
+BLYNK_AUTH_TOKEN = "WJbSxpdW_KDfcH1BnAtdHlX6vxxeAXRZ"
+
 
 
 listtest = [5, 8, 7, 3, 3, 6, 10, 4, 9, 9, 4, 2, 1, 3, 4, 6, 5, 1, 9, 10, 5, 3, 10, 1]
@@ -40,7 +42,6 @@ def getav(numbers):
             avgweights += average[i]
         result = (avgweights/6)-CalibrateZero
         resultsoutput.append(result)
-        timeav.append(time.time()-timebegin)
         x = y
         y += 6
         result = 0
@@ -55,51 +56,47 @@ if __name__ == '__main__':
     connection = qwiic.is_connected()
     print(connection)
     qwiic.available()
-    blynk = blynklib.Blynk('WJbSxpdW_KDfcH1BnAtdHlX6vxxeAXRZ')
-    @blynk.
-    while calzero != "n":
-        input('Qwiic calibration. Press any key when device is not under strain.')
-        CalibrateZero = qwiic.getAverage(averageAmount=64)
-        calzero = input(f'Calibration succeeded. Current offset set to {CalibrateZero}. Redo calibration? (y/n)')
-    while calweight != "n":
-        input("Qwiic calibration. Press any key when device is under known weight.")
-        CalibrateWeight = qwiic.getAverage(averageAmount=64)
-        knownweight = int(input("How much does the weight equal in kilos?"))*9.81
-        calweight = input(f'Calibration succeeded. Current strain set to {CalibrateWeight} under a force of {knownweight}.')
+    blynk = BlynkLib.Blynk(BLYNK_AUTH_TOKEN)
+    blynk.connect()
+
+    @blynk.on("connected")
+    def blynk_connnected():
+        print("Raspberry pi connected")
+
+ ### Defined calibration, nog uit te testen? Should work met blynk
+    blynk.virtual_write("V0",1)
+    while V1 != 1:
+        @blynk.on("V1")
+        def V1_handler(value):
+                if value == 1:
+                    CalibrateZero = qwiic.getAverage(averageAmount=64)
+                if value == 0:
+                    blynk.virtual_write("V0",0)
+                    V1 = 0
+
+    blynk.virtual_write("V2,1")
+    while V1 != 1:
+        @blynk.on("V1")
+        def V2_handler(value):
+            if value == 1:
+                CalibrateWeight = qwiic.getAverage(averageAmount=64)
+                while weight == False:
+                    @blynk.on("V3")
+                    def V3_handler(weight):
+                        calweight = weight
+                        weight= True
+            if value ==0:
+                blynk.virtual_write("V2",0)
+
+    while True:
+        blynk.run()
+        numbers = getav(qwiic.getReading())
+        for i in range(0,len(numbers)):
+            blynk.virtual_write("V4",numbers[i])
 
 
 
 
 
-
-    while input() != "scalestop":
-        currentreading = qwiic.getReading()
-        print(currentreading)
-        getav(currentreading)
-        time.sleep(0.5)
-
-looping = True
-time2 = int(input("Hoeveel seconden wil je de grafiek zien? "))
-timebegin = time.time()
-
-
-'''while looping:
-    timeav =[]
-    currentreading = qwiic.getReading()
-    print(currentreading)
-    numbers = getav(currentreading)
-    numbers = getav(listtest)
-    for z in range(0,4):
-        y.append(numbers[z])
-        x.append(timeav[z])
-    x.append(time.time())
-    y.append(random.random())
-    if time.time()-timebegin > time2:
-        x = x[4:]
-        y = y[4:]
-    pyplot.clf()
-    pyplot.plot(x,y)
-    pyplot.draw()
-    pyplot.pause(0.03) # Tijd instellen op basis van metingen per seconde => momenteel 16 per seconde'''
 
 
