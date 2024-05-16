@@ -106,11 +106,14 @@ if __name__ == '__main__':
         for i in range(0,len(numbers)):
             blynk.virtual_write("V4",numbers[i])
         if motor == 0:
-        #Ga omhoog arduino
+            pass
+            #Ga omhoog arduino
         if motor == 1:
-        #Stop arduino
+            pass
+            #Stop arduino
         if motor == 2:
-        #Ga omlaag arduino
+            pass
+            #Ga omlaag arduino
 
 
 
