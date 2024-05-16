@@ -18,6 +18,7 @@ resultsoutput =[]
 V1 = 0
 V2 = 0
 CalibrateZero=0
+motor = 1
 weighttest = False
 BLYNK_TEMPLATE_ID = "TMPL5E9rUAxOQ"
 BLYNK_TEMPLATE_NAME = "Quickstart Template"
