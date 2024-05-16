@@ -4,10 +4,8 @@ import qwiicscale
 import time
 import matplotlib as mpl
 import numpy as np
-import cayenne.client
 from matplotlib import pyplot
 from matplotlib.animation import FuncAnimation
-import keyboard
 import BlynkLib
 
 
@@ -16,10 +14,10 @@ import BlynkLib
 qwiic = qwiicscale.QwiicScale()
 average = []
 resultsoutput =[]
-V1 = 0
-V2 = 0
 CalibrateZero=0
 motor = 1
+global status
+status = "calone"
 weighttest = False
 BLYNK_TEMPLATE_ID = "TMPL5E9rUAxOQ"
 BLYNK_TEMPLATE_NAME = "Quickstart Template"
@@ -60,29 +58,26 @@ if __name__ == '__main__':
     print(connection)
     qwiic.available()
     blynk = BlynkLib.Blynk(BLYNK_AUTH_TOKEN)
-    blynk.connect()
 
     @blynk.on("connected")
     def blynk_connnected():
         print("Raspberry pi connected")
 
  ### Defined calibration, nog uit te testen? Should work met blynk
-    blynk.virtual_write("V0",1)
-    while V1 != 1:
-        @blynk.on("V1")
-        def V1_handler(value):
-                if value == 1:
-                    global CalibrateZero
-                    CalibrateZero = qwiic.getAverage(averageAmount=64)
-                if value == 0:
-                    blynk.virtual_write("V0",0)
-                    global V1
-                    V1 = 1
+    blynk.virtual_write(0,1)
 
-    blynk.virtual_write("V2,1")
-    while V1 != 1:
-        @blynk.on("V1")
-        def V2_handler(value):
+    @blynk.on("V1")
+    def V1_handler(value):
+        if status == "calone":
+            if value == 1:
+                global CalibrateZero
+                CalibrateZero = qwiic.getAverage(averageAmount=64)
+            if value == 0:
+                blynk.virtual_write(0,0)
+                global status
+                status = "calweight"
+                blynk.virtual_write(2,1)
+        if status == "calweight":
             if value == 1:
                 global CalibrateWeight
                 CalibrateWeight = qwiic.getAverage(averageAmount=64)
@@ -93,14 +88,13 @@ if __name__ == '__main__':
                         calweight = weight
                         global weighttest
                         weighttest = True
-            if value ==0:
-                blynk.virtual_write("V2",0)
-                global V1
-                V1 = 1
-    @blynk.on("V1")
-    def V1_handler2(value):
-        global motor
-        motor = value
+            if value == 0:
+                blynk.virtual_write("V2", 0)
+                status = "motor"
+        if status == "motor":
+            global motor
+            motor = value
+
 
     while True:
         blynk.run()
