@@ -13,8 +13,6 @@ from pyfirmata import Arduino
 
 ##Variables, class and functions set
 qwiic = qwiicscale.QwiicScale()
-average = []
-resultsoutput =[]
 CalibrateZero=0
 motor = 1
 calibrated = False
