@@ -1,4 +1,4 @@
-# Import statements
+# Import statements: remove all unimportant
 import random
 import qwiicscale
 import time
@@ -9,6 +9,7 @@ from matplotlib import pyplot
 from matplotlib.animation import FuncAnimation
 import keyboard
 import BlynkLib
+
 
 
 ##Variables, class and functions set
