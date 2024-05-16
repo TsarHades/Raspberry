@@ -45,26 +45,9 @@ listtest = [5, 8, 7, 3, 3, 6, 10, 4, 9, 9, 4, 2, 1, 3, 4, 6, 5, 1, 9, 10, 5, 3, 
 
 
 
-def getav(numbers):
-    resultsoutput = []
-    x=0
-    avgweights=0
-    y=6
-    counter = 0
-    for z in range(0,len(numbers)):
-        average.append(numbers[z])
-    while counter != 4:
-        for i in range(x,y):
-            avgweights += average[i]
-        result = (avgweights/6)-CalibrateZero
-        result = (calweight*result)/(CalibrateWeight-CalibrateZero) #Lineair interpolatie naar gewicht
-        resultsoutput.append(result)
-        x = y
-        y += 6
-        result = 0
-        counter +=1
-        avgweights = 0
-    return resultsoutput
+def getav(result2):
+    result = calweight*(result2-CalibrateZero)/(CalibrateWeight-CalibrateZero) #Lineair interpolatie naar gewicht
+    return result
 
 
 
@@ -124,8 +107,7 @@ if __name__ == '__main__':
         while calibrated != True:
             pass
         numbers = getav(qwiic.getReading())
-        for i in range(0,len(numbers)):
-            blynk.virtual_write(4,numbers[i])
+        blynk.virtual_write(4,numbers)
         if motor == 0:
             pin2.write(1)
             pin3.write(0)
