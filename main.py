@@ -7,6 +7,7 @@ import numpy as np
 from matplotlib import pyplot
 from matplotlib.animation import FuncAnimation
 import BlynkLib
+from pyfirmata import Arduino
 
 
 
@@ -21,6 +22,22 @@ status = "calone"
 BLYNK_TEMPLATE_ID = "TMPL5E9rUAxOQ"
 BLYNK_TEMPLATE_NAME = "Quickstart Template"
 BLYNK_AUTH_TOKEN = "WJbSxpdW_KDfcH1BnAtdHlX6vxxeAXRZ"
+
+
+
+board = Arduino("poort van onze arduino")
+while not board.is_ready():
+    pass
+    
+arduino_pin2 = 2
+arduino_pin3 = 3
+
+board.digital[arduino_pin2].mode = pyfirmata.OUTPUT
+board.digital[arduino_pin3].mode = pyfirmata.OUTPUT
+
+pin2 = board.digital[arduino_pin2]
+pin3 = board.digital[arduino_pin3]
+
 
 
 
@@ -110,14 +127,17 @@ if __name__ == '__main__':
         for i in range(0,len(numbers)):
             blynk.virtual_write(4,numbers[i])
         if motor == 0:
-            pass
-            #Ga omhoog arduino
+            pin2.write(1)
+            pin3.write(0)
+            #Ga omhoog arduino, kan zijn dat 1 of 0 moet omgedraaid worden
         if motor == 1:
-            pass
+            pin2.write(0)
+            pin3.write(0)
             #Stop arduino
         if motor == 2:
-            pass
-            #Ga omlaag arduino
+            pin2.write(0)
+            pin3.write(1)
+            #Ga omlaag arduino, kan zijn dat 1 of 0 moet omgedraaid worden
 
 
 
