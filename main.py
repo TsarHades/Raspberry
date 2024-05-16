@@ -16,6 +16,7 @@ average = []
 resultsoutput =[]
 CalibrateZero=0
 motor = 1
+calibrated = False
 status = "calone"
 BLYNK_TEMPLATE_ID = "TMPL5E9rUAxOQ"
 BLYNK_TEMPLATE_NAME = "Quickstart Template"
@@ -80,6 +81,8 @@ if __name__ == '__main__':
                 blynk.virtual_write(0, 0)
                 status = "motor"
                 blynk.virtual_write(2,1)
+                global calibrated
+                calibrated = True
         if status == "calone":
             if '1' in value:
                 global CalibrateZero
@@ -96,11 +99,13 @@ if __name__ == '__main__':
     def V3_handler(weight):
         print(f'Weight received. Weight set = {weight}')
         global calweight
-        calweight = weight
+        calweight = weight[0]
 
 
     while True:
         blynk.run()
+        while calibrated != True:
+            pass
         numbers = getav(qwiic.getReading())
         for i in range(0,len(numbers)):
             blynk.virtual_write(4,numbers[i])
