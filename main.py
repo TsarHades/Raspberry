@@ -16,9 +16,7 @@ average = []
 resultsoutput =[]
 CalibrateZero=0
 motor = 1
-global status
 status = "calone"
-weighttest = False
 BLYNK_TEMPLATE_ID = "TMPL5E9rUAxOQ"
 BLYNK_TEMPLATE_NAME = "Quickstart Template"
 BLYNK_AUTH_TOKEN = "WJbSxpdW_KDfcH1BnAtdHlX6vxxeAXRZ"
@@ -65,42 +63,47 @@ if __name__ == '__main__':
 
  ### Defined calibration, nog uit te testen? Should work met blynk
     blynk.virtual_write(0,1)
+    blynk.virtual_write(2,0)
 
     @blynk.on("V1")
     def V1_handler(value):
-        if status == "calone":
-            if value == 1:
-                global CalibrateZero
-                CalibrateZero = qwiic.getAverage(averageAmount=64)
-            if value == 0:
-                blynk.virtual_write(0,0)
-                global status
-                status = "calweight"
-                blynk.virtual_write(2,1)
-        if status == "calweight":
-            if value == 1:
-                global CalibrateWeight
-                CalibrateWeight = qwiic.getAverage(averageAmount=64)
-                while weighttest == False:
-                    @blynk.on("V3")
-                    def V3_handler(weight):
-                        global calweight
-                        calweight = weight
-                        global weighttest
-                        weighttest = True
-            if value == 0:
-                blynk.virtual_write("V2", 0)
-                status = "motor"
+        global status
+        print(f'value = {value}')
         if status == "motor":
             global motor
             motor = value
+        if status == "calweight":
+            if '1' in value:
+                global CalibrateWeight
+                CalibrateWeight = qwiic.getAverage(averageAmount=64)
+            if '0' in value:
+                blynk.virtual_write(0, 0)
+                status = "motor"
+                blynk.virtual_write(2,1)
+        if status == "calone":
+            if '1' in value:
+                global CalibrateZero
+                CalibrateZero = qwiic.getAverage(averageAmount=64)
+            if '0' in value:
+                blynk.virtual_write(0,0)
+                status = "calweight"
+                time.sleep(2)
+                blynk.virtual_write(0,1)
+
+
+
+    @blynk.on("V3")
+    def V3_handler(weight):
+        print(f'Weight received. Weight set = {weight}')
+        global calweight
+        calweight = weight
 
 
     while True:
         blynk.run()
         numbers = getav(qwiic.getReading())
         for i in range(0,len(numbers)):
-            blynk.virtual_write("V4",numbers[i])
+            blynk.virtual_write(4,numbers[i])
         if motor == 0:
             pass
             #Ga omhoog arduino
