@@ -55,6 +55,7 @@ if __name__ == '__main__':
         print("Raspberry pi connected")
 
  ### Defining calibration, ziet er ok uit
+    blynk.virtual_write(0,1)
     blynk.virtual_write(2,0)
 
     @blynk.on("V1")
