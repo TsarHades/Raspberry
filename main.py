@@ -100,6 +100,7 @@ if __name__ == '__main__':
         global calweight
         calweight = weight[0]
 
+#testing
     while True:
         blynk.run()
         while calibrated != True:
