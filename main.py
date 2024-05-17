@@ -17,10 +17,11 @@ CalibrateZero=0
 motor = 1
 calibrated = False
 status = "calone"
+avlist = []
 BLYNK_TEMPLATE_ID = "TMPL5E9rUAxOQ"
 BLYNK_TEMPLATE_NAME = "Quickstart Template"
 BLYNK_AUTH_TOKEN = "WJbSxpdW_KDfcH1BnAtdHlX6vxxeAXRZ"
-
+average  = 0
 
 
 board = Arduino("poort van onze arduino")
@@ -43,7 +44,7 @@ listtest = [5, 8, 7, 3, 3, 6, 10, 4, 9, 9, 4, 2, 1, 3, 4, 6, 5, 1, 9, 10, 5, 3, 
 
 
 
-def getav(result2):
+def numcal(result2):
     result = calweight*(result2-CalibrateZero)/(CalibrateWeight-CalibrateZero) #Lineair interpolatie naar gewicht
     return result
 
@@ -99,13 +100,19 @@ if __name__ == '__main__':
         global calweight
         calweight = weight[0]
 
-
     while True:
         blynk.run()
         while calibrated != True:
             pass
-        numbers = getav(qwiic.getReading())
-        blynk.virtual_write(4,numbers)
+        numbers = numcal(qwiic.getReading())
+        if len(avlist) < 12:
+            avlist.append(numbers)
+        if len(avlist) == 12:
+            for i in range(0,len(avlist)):
+                average += avlist[i]
+            average = average/12
+            blynk.virtual_write(4, average)
+            average=0
         if motor == 0:
             pin2.write(1)
             pin3.write(0)
