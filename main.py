@@ -7,7 +7,7 @@ import numpy as np
 from matplotlib import pyplot
 from matplotlib.animation import FuncAnimation
 import BlynkLib
-from pyfirmata import Arduino
+from pyfirmata import Arduino, util
 
 
 
@@ -38,16 +38,9 @@ pin2 = board.digital[arduino_pin2]
 pin3 = board.digital[arduino_pin3]
 
 
-
-
-listtest = [5, 8, 7, 3, 3, 6, 10, 4, 9, 9, 4, 2, 1, 3, 4, 6, 5, 1, 9, 10, 5, 3, 10, 1]
-
-
-
 def numcal(result2):
     result = calweight*(result2-CalibrateZero)/(CalibrateWeight-CalibrateZero) #Lineair interpolatie naar gewicht
     return result
-
 
 
 if __name__ == '__main__':
@@ -61,8 +54,7 @@ if __name__ == '__main__':
     def blynk_connnected():
         print("Raspberry pi connected")
 
- ### Defined calibration, nog uit te testen? Should work met blynk
-    blynk.virtual_write(0,1)
+ ### Defining calibration, ziet er ok uit
     blynk.virtual_write(2,0)
 
     @blynk.on("V1")
