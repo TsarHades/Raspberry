@@ -27,7 +27,7 @@ average  = 0
 board = Arduino("poort van onze arduino")
 while not board.is_ready():
     pass
-    
+
 arduino_pin2 = 2
 arduino_pin3 = 3
 
@@ -113,18 +113,18 @@ if __name__ == '__main__':
             average = average/12
             blynk.virtual_write(4, average)
             average=0
-        if motor == 0:
+        if motor == 1:
             pin2.write(1)
             pin3.write(0)
-            #Ga omhoog arduino, kan zijn dat 1 of 0 moet omgedraaid worden
-        if motor == 1:
+            # Ga omhoog arduino, kan zijn dat 1 of 0 moet omgedraaid worden
+        if motor == 0:
             pin2.write(0)
             pin3.write(0)
-            #Stop arduino
+            # Stop arduino
         if motor == 2:
             pin2.write(0)
             pin3.write(1)
-            #Ga omlaag arduino, kan zijn dat 1 of 0 moet omgedraaid worden
+            # Ga omlaag arduino, kan zijn dat 1 of 0 moet omgedraaid worden
 
 
 
