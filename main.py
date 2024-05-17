@@ -114,6 +114,7 @@ if __name__ == '__main__':
             average = average/12
             blynk.virtual_write(4, average)
             average=0
+            avlist = []
         if motor == 1:
             pin2.write(1)
             pin3.write(0)
