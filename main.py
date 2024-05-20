@@ -11,19 +11,21 @@ from pyfirmata import Arduino, util
 
 
 
-##Variables, class and functions set
+## Qwiic Opstelling
 qwiic = qwiicscale.QwiicScale()
-CalibrateZero=0
+zero_offset = 0
 motor = 1
+average  = 0
 calibrated = False
 status = "calone"
 avlist = []
+
+## Blynk variabelen
 BLYNK_TEMPLATE_ID = "TMPL5E9rUAxOQ"
 BLYNK_TEMPLATE_NAME = "Quickstart Template"
 BLYNK_AUTH_TOKEN = "WJbSxpdW_KDfcH1BnAtdHlX6vxxeAXRZ"
-average  = 0
 
-
+## Arduino opstelling
 board = Arduino("poort van onze arduino")
 while not board.is_ready():
     pass
@@ -38,8 +40,8 @@ pin2 = board.digital[arduino_pin2]
 pin3 = board.digital[arduino_pin3]
 
 
-def numcal(result2):
-    result = calweight*(result2-CalibrateZero)/(CalibrateWeight-CalibrateZero) #Lineair interpolatie naar gewicht
+def numcal(meetdata):
+    result = known_weight*(meetdata-zero_offset)/(measured_weight-zero_offset) #Lineair interpolatie naar gewicht
     return result
 
 
@@ -52,23 +54,24 @@ if __name__ == '__main__':
 
     @blynk.on("connected")
     def blynk_connnected():
-        print("Raspberry pi connected")
+        print("Raspberry pi connected to Blynk")
 
- ### Defining calibration, ziet er ok uit
+ ### Ledjes en zo
     blynk.virtual_write(0,1)
     blynk.virtual_write(2,0)
 
+ ## Blynk Triggers
     @blynk.on("V1")
     def V1_handler(value):
         global status
-        print(f'value = {value}')
+        print(f'Value = {value[0]}')
         if status == "motor":
             global motor
             motor = value
         if status == "calweight":
             if '1' in value:
-                global CalibrateWeight
-                CalibrateWeight = qwiic.getAverage(averageAmount=64)
+                global measured_weight
+                measured_weight = qwiic.getAverage(averageAmount=64)
             if '0' in value:
                 blynk.virtual_write(0, 0)
                 status = "motor"
@@ -77,8 +80,8 @@ if __name__ == '__main__':
                 calibrated = True
         if status == "calone":
             if '1' in value:
-                global CalibrateZero
-                CalibrateZero = qwiic.getAverage(averageAmount=64)
+                global zero_offset
+                zero_offset = qwiic.getAverage(averageAmount=64)
             if '0' in value:
                 blynk.virtual_write(0,0)
                 status = "calweight"
@@ -90,10 +93,10 @@ if __name__ == '__main__':
     @blynk.on("V3")
     def V3_handler(weight):
         print(f'Weight received. Weight set = {weight}')
-        global calweight
-        calweight = weight[0]
+        global known_weight
+        known_weight = weight[0]
 
-#testing
+## Besturen van de motor en doorsturen gekalibreerde data naar blynk
     while True:
         blynk.run()
         while calibrated != True:
