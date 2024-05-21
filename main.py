@@ -1,11 +1,6 @@
-# Import statements: remove all unimportant
-import random
+# Import statements
 import qwiicscale
 import time
-import matplotlib as mpl
-import numpy as np
-from matplotlib import pyplot
-from matplotlib.animation import FuncAnimation
 import BlynkLib
 from pyfirmata import Arduino, util
 
@@ -71,7 +66,7 @@ if __name__ == '__main__':
         if status == "calweight":
             if '1' in value:
                 global measured_weight
-                measured_weight = qwiic.getAverage(averageAmount=64)
+                measured_weight = int(round(qwiic.getAverage(averageAmount=64)))
             if '0' in value:
                 blynk.virtual_write(0, 0)
                 status = "motor"
@@ -81,7 +76,7 @@ if __name__ == '__main__':
         if status == "calone":
             if '1' in value:
                 global zero_offset
-                zero_offset = qwiic.getAverage(averageAmount=64)
+                zero_offset = int(round(qwiic.getAverage(averageAmount=64)))
             if '0' in value:
                 blynk.virtual_write(0,0)
                 status = "calweight"
@@ -92,37 +87,36 @@ if __name__ == '__main__':
 
     @blynk.on("V3")
     def V3_handler(weight):
-        print(f'Weight received. Weight set = {weight}')
+        print(f'Weight received. Weight set = {weight[0]} g')
         global known_weight
-        known_weight = weight[0]
+        known_weight = int(weight[0])
 
 ## Besturen van de motor en doorsturen gekalibreerde data naar blynk
     while True:
         blynk.run()
-        while calibrated != True:
-            pass
-        numbers = numcal(qwiic.getReading())
-        if len(avlist) < 12:
-            avlist.append(numbers)
-        if len(avlist) == 12:
-            for i in range(0,len(avlist)):
-                average += avlist[i]
-            average = average/12
-            blynk.virtual_write(4, average)
-            average=0
-            avlist = []
-        if motor == 1:
-            pin2.write(1)
-            pin3.write(0)
-            # Ga omhoog arduino, kan zijn dat 1 of 0 moet omgedraaid worden
-        if motor == 0:
-            pin2.write(0)
-            pin3.write(0)
-            # Stop arduino
-        if motor == 2:
-            pin2.write(0)
-            pin3.write(1)
-            # Ga omlaag arduino, kan zijn dat 1 of 0 moet omgedraaid worden
+        if calibrated == True:
+            numbers = numcal(int(qwiic.getReading()))
+            if len(avlist) < 10:
+                avlist.append(numbers)
+            if len(avlist) == 10:
+                for i in range(0,len(avlist)):
+                    average += avlist[i]
+                average = average/10
+                blynk.virtual_write(4, average)
+                average=0
+                avlist = []
+            if motor == 1:
+                pin2.write(1)
+                pin3.write(0)
+                # Ga omhoog arduino, kan zijn dat 1 of 0 moet omgedraaid worden
+            if motor == 0:
+                pin2.write(0)
+                pin3.write(0)
+                # Stop arduino
+            if motor == 2:
+                pin2.write(0)
+                pin3.write(1)
+                # Ga omlaag arduino, kan zijn dat 1 of 0 moet omgedraaid worden
 
 
 
