@@ -1,18 +1,18 @@
 # Import statements
-import qwiicscale
+'''import qwiicscale'''
 import time
 import BlynkLib
 import pyfirmata
 from pyfirmata import Arduino, util
 
 ## Qwiic Opstelling
-qwiic = qwiicscale.QwiicScale()
+'''qwiic = qwiicscale.QwiicScale()
 zero_offset = 0
 motor = 1
 average  = 0
 calibrated = False
 status = "calone"
-avlist = []
+avlist = []'''
 
 ## Blynk variabelen
 BLYNK_TEMPLATE_ID = "TMPL5E9rUAxOQ"
@@ -20,6 +20,7 @@ BLYNK_TEMPLATE_NAME = "Quickstart Template"
 BLYNK_AUTH_TOKEN = "WJbSxpdW_KDfcH1BnAtdHlX6vxxeAXRZ"
 
 ## Arduino opstelling
+Calibrated = True
 board = Arduino("poort van onze arduino")
 while not board.is_ready():
     pass
@@ -34,16 +35,16 @@ pin2 = board.digital[arduino_pin2]
 pin3 = board.digital[arduino_pin3]
 
 
-def numcal(meetdata):
+'''def numcal(meetdata):
     result = known_weight*(meetdata-zero_offset)/(measured_weight-zero_offset) #Lineair interpolatie naar gewicht
-    return result
+    return result'''
 
 
 if __name__ == '__main__':
-    qwiic.begin()
+    '''qwiic.begin()
     connection = qwiic.is_connected()
     print(connection)
-    qwiic.available()
+    qwiic.available()'''
     blynk = BlynkLib.Blynk(BLYNK_AUTH_TOKEN)
 
     @blynk.on("connected")
@@ -53,6 +54,7 @@ if __name__ == '__main__':
  ### Ledjes en zo
     blynk.virtual_write(0,1)
     blynk.virtual_write(2,0)
+    status = "motor"
 
  ## Blynk Triggers
     @blynk.on("V1")
@@ -94,7 +96,7 @@ if __name__ == '__main__':
     while True:
         blynk.run()
         if calibrated == True:
-            numbers = numcal(int(qwiic.getReading()))
+            '''numbers = numcal(int(qwiic.getReading()))
             if len(avlist) < 10:
                 avlist.append(numbers)
             if len(avlist) == 10:
@@ -103,7 +105,7 @@ if __name__ == '__main__':
                 average = average/10
                 blynk.virtual_write(4, average)
                 average=0
-                avlist = []
+                avlist = []'''
             if motor == 1:
                 pin2.write(1)
                 pin3.write(0)
