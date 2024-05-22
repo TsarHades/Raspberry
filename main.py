@@ -2,9 +2,8 @@
 import qwiicscale
 import time
 import BlynkLib
+import pyfirmata
 from pyfirmata import Arduino, util
-
-
 
 ## Qwiic Opstelling
 qwiic = qwiicscale.QwiicScale()
