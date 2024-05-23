@@ -20,7 +20,7 @@ BLYNK_TEMPLATE_NAME = "Quickstart Template"
 BLYNK_AUTH_TOKEN = "WJbSxpdW_KDfcH1BnAtdHlX6vxxeAXRZ"
 
 ## Arduino opstelling
-board = Arduino("poort van onze arduino")
+board = Arduino('COM6')
 while not board.is_ready():
     pass
 
