@@ -9,11 +9,13 @@ from matplotlib import pyplot
 ## Qwiic Opstelling
 qwiic = qwiicscale.QwiicScale()
 zero_offset = 0
-motor = 1
+motor = ['0']
 average  = 0
 calibrated = False
 status = "calone"
 avlist = []
+x = []
+y = []
 
 ## Blynk variabelen
 BLYNK_TEMPLATE_ID = "TMPL5E9rUAxOQ"
@@ -109,15 +111,15 @@ if __name__ == '__main__':
                 blynk.virtual_write(4, average)
                 average=0
                 avlist = []
-            if motor == 1:
+            if "1" in motor:
                 GPIO.output(20, GPIO.HIGH)
                 GPIO.output(26, GPIO.LOW)
                 # Ga omhoog arduino, kan zijn dat 1 of 0 moet omgedraaid worden
-            if motor == 0:
+            if "0" in motor:
                 GPIO.output(20, GPIO.LOW)
                 GPIO.output(26, GPIO.LOW)
                 # Stop arduino
-            if motor == 2:
+            if "2" in motor:
                 GPIO.output(20, GPIO.LOW)
                 GPIO.output(26, GPIO.HIGH)
                 # Ga omlaag arduino, kan zijn dat 1 of 0 moet omgedraaid worden
