@@ -2,8 +2,9 @@
 import qwiicscale
 import time
 import BlynkLib
-import pyfirmata
-from pyfirmata import Arduino, util
+import RPi.GPIO as GPIO
+
+
 
 ## Qwiic Opstelling
 qwiic = qwiicscale.QwiicScale()
@@ -20,18 +21,6 @@ BLYNK_TEMPLATE_NAME = "Quickstart Template"
 BLYNK_AUTH_TOKEN = "WJbSxpdW_KDfcH1BnAtdHlX6vxxeAXRZ"
 
 ## Arduino opstelling
-board = Arduino('COM6')
-while not board.is_ready():
-    pass
-
-arduino_pin2 = 2
-arduino_pin3 = 3
-
-board.digital[arduino_pin2].mode = pyfirmata.OUTPUT
-board.digital[arduino_pin3].mode = pyfirmata.OUTPUT
-
-pin2 = board.digital[arduino_pin2]
-pin3 = board.digital[arduino_pin3]
 
 
 def numcal(meetdata):
@@ -41,10 +30,14 @@ def numcal(meetdata):
 
 if __name__ == '__main__':
     qwiic.begin()
+    GPIO.setmode(GPIO.BCM)
     connection = qwiic.is_connected()
     print(connection)
     qwiic.available()
     blynk = BlynkLib.Blynk(BLYNK_AUTH_TOKEN)
+    GPIO.setup(20, GPIO.OUT)
+    GPIO.setup(26, GPIO.OUT)
+
 
     @blynk.on("connected")
     def blynk_connnected():
@@ -105,23 +98,17 @@ if __name__ == '__main__':
                 average=0
                 avlist = []
             if motor == 1:
-                pin2.write(1)
-                pin3.write(0)
+                GPIO.output(20, GPIO.HIGH)
+                GPIO.output(26, GPIO.LOW)
                 # Ga omhoog arduino, kan zijn dat 1 of 0 moet omgedraaid worden
             if motor == 0:
-                pin2.write(0)
-                pin3.write(0)
+                GPIO.output(20, GPIO.LOW)
+                GPIO.output(26, GPIO.LOW)
                 # Stop arduino
             if motor == 2:
-                pin2.write(0)
-                pin3.write(1)
+                GPIO.output(20, GPIO.LOW)
+                GPIO.output(26, GPIO.HIGH)
                 # Ga omlaag arduino, kan zijn dat 1 of 0 moet omgedraaid worden
-
-
-
-
-
-
 
 
 
