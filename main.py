@@ -94,6 +94,18 @@ if __name__ == '__main__':
                 for i in range(0,len(avlist)):
                     average += avlist[i]
                 average = average/10
+                x.append(time.time())
+                y.append(numbers)
+                time.sleep(0.03)
+                if len(y) > 10:
+                    y = y[1:]
+                if len(x) > 10:
+                    x = x[1:]
+                pyplot.clf()
+                pyplot.plot(x,y)
+                pyplot.draw()
+                pyplot.pause(0.033333)
+                pyplot.pause(0.03)
                 blynk.virtual_write(4, average)
                 average=0
                 avlist = []
