@@ -3,8 +3,8 @@ import qwiicscale
 import time
 import BlynkLib
 import RPi.GPIO as GPIO
-
-
+import matplotlib
+from matplotlib import pyplot
 
 ## Qwiic Opstelling
 qwiic = qwiicscale.QwiicScale()
